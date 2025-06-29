@@ -49,7 +49,14 @@
 </html>
 
  <scripts> {
-    <script>console.log("testando")
+    <script>
         $(document).ready(function () {
             $('#Cpf').mask('000.000.000-00');
+
+            var val = $('#Cpf').val();
+            if (val && val.length === 11 && val.indexOf('.') === -1) {
+                $('#Cpf').val(val.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4'));
+
+                console.log(val);
+            }
         });</script>
