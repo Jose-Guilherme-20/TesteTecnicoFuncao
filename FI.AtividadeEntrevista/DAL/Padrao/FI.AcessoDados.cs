@@ -54,7 +54,7 @@ namespace FI.AtividadeEntrevista.DAL
             SqlDataAdapter adapter = new SqlDataAdapter(comando);
             DataSet ds = new DataSet();
             conexao.Open();
-
+https://localhost:44333/Cliente/Incluir
             try
             {
                 adapter.Fill(ds);

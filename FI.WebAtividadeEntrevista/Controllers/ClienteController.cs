@@ -49,7 +49,7 @@ namespace WebAtividadeEntrevista.Controllers
                     Nacionalidade = model.Nacionalidade,
                     Nome = model.Nome,
                     Sobrenome = model.Sobrenome,
-                    Cpf = model.Cpf,
+                    Cpf = model.Cpf.Replace(".","").Replace("-",""),
                     Telefone = model.Telefone
                 });
 
