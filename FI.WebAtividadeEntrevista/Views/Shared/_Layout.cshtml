@@ -44,14 +44,20 @@
 
 
 
-    @RenderSection("scripts", required: false)
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
 
  <scripts> {
     <script>
+
+        $('#modalBeneficiarios').on('shown.bs.modal', function () {
+            $('#Cpf').mask('000.000.000-00');
+        });
+
         $(document).ready(function () {
             $('#Cpf').mask('000.000.000-00');
+            $('#CpfBeneficiario').mask('000.000.000-00');
 
             var val = $('#Cpf').val();
             if (val && val.length === 11 && val.indexOf('.') === -1) {

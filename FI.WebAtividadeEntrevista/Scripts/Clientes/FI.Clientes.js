@@ -31,7 +31,7 @@ $(document).ready(function () {
             }
         });
     })
-    
+   
 })
 
 function ModalDialog(titulo, texto) {
