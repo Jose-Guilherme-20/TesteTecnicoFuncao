@@ -30,10 +30,6 @@ namespace FI.AtividadeEntrevista.DAL
             return ret;
         }
 
-        /// <summary>
-        /// Inclui um novo Beneficiario
-        /// </summary>
-        /// <param name="Beneficiario">Objeto de Beneficiario</param>
         internal DML.Beneficiario Consultar(long Id)
         {
             List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
@@ -45,6 +41,21 @@ namespace FI.AtividadeEntrevista.DAL
 
             return cli.FirstOrDefault();
         }
+
+        internal List<DML.Beneficiario> ListarPorCliente(long idCliente)
+        {
+            List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
+
+            parametros.Add(new System.Data.SqlClient.SqlParameter("IdCliente", idCliente));
+
+            DataSet ds = base.Consultar("FI_SP_ConsBeneficiarios", parametros);
+            List<DML.Beneficiario> cli = Converter(ds);
+
+            return cli;
+
+        }
+
+
 
         internal bool VerificarExistencia(string CPF)
         {
@@ -103,10 +114,10 @@ namespace FI.AtividadeEntrevista.DAL
             List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
 
             parametros.Add(new System.Data.SqlClient.SqlParameter("Nome", beneficiario.Nome));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("IdCliente", beneficiario.ClienteId));
             parametros.Add(new System.Data.SqlClient.SqlParameter("Cpf", beneficiario.Cpf));
+            parametros.Add(new System.Data.SqlClient.SqlParameter("Id", beneficiario.Id));
 
-            base.Executar("FI_SP_AltBeneficiario", parametros);
+            base.Executar("FI_SP_AltBenef", parametros);
         }
 
 
@@ -134,7 +145,7 @@ namespace FI.AtividadeEntrevista.DAL
                     cli.Id = row.Field<long>("Id");
                     cli.Nome = row.Field<string>("Nome");
                     cli.Cpf = row.Field<string>("Cpf");
-                    cli.ClienteId = row.Field<long>("ClienteId");
+                    cli.ClienteId = row.Field<long>("IdCliente");
                     
                     lista.Add(cli);
                 }

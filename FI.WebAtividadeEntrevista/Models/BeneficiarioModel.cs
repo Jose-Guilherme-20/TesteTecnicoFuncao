@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
-namespace FI.WebAtividadeEntrevista.Models
+
+namespace WebAtividadeEntrevista.Models
 {
-    public class BeneficiarioModal
+    public class BeneficiarioModel
     {
         /// <summary>
         /// Identificador do Beneficiário

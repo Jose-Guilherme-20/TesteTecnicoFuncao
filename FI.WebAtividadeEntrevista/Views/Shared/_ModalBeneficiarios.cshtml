@@ -1,0 +1,159 @@
+﻿@model IEnumerable<WebAtividadeEntrevista.Models.BeneficiarioModel>
+
+
+    <script>
+        var beneficiariosIniciais = @Html.Raw(Json.Encode(Model ?? new List<WebAtividadeEntrevista.Models.BeneficiarioModel>()));
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+    <div class="modal fade" id="modalBeneficiarios" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Gerenciar Beneficiários</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-row mb-4 align-items-end">
+                        <div class="col-md-4">
+                            <label class="font-weight-bold" for="CpfBeneficiario">CPF</label>
+                            <input type="text" class="form-control cpf" id="CpfBeneficiario" placeholder="Ex.: 010.011.111-00" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="font-weight-bold" for="NomeBeneficiario">Nome</label>
+                            <input type="text" class="form-control" id="NomeBeneficiario" placeholder="Ex.: Maria" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="d-block invisible">Incluir</label> <!-- invisível só pra manter o alinhamento -->
+                            <button type="button" class="btn btn-success btn-block" id="btnIncluirBeneficiario">Incluir</button>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered table-hover" id="tabelaBeneficiarios">
+                        <thead>
+                            <tr>
+                                <th>CPF</th>
+                                <th>Nome</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Beneficiários serão renderizados aqui -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-success" id="btnConfirmarBeneficiarios"><i class="fas fa-check"></i> Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+
+        .modal-body {
+            padding-top: 20px !important;
+        }
+
+        .modal-body {
+            display: flex;
+            flex-direction: column; /* para empilhar verticalmente */
+            gap: 20px; /* espaçamento vertical entre filhos */
+        }
+
+    </style>
+
+    <script>
+        $(function () {
+            var beneficiarios = beneficiariosIniciais || [];
+            var indiceEdicao = null;
+
+            // Máscara para CPF
+            $('.cpf').mask('000.000.000-00');
+
+            function formatarCPF(cpf) {
+                return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+            }
+
+            function renderizarTabela() {
+                var tbody = $('#tabelaBeneficiarios tbody').empty();
+                beneficiarios.forEach(function (b, i) {
+                    var row = $('<tr>').attr('data-index', i);
+                    row.append($('<td>').text(formatarCPF(b.Cpf)));
+                    row.append($('<td>').text(b.Nome));
+
+                    var btnEditar = $('<button>')
+                        .addClass('btn btn-primary btn-sm')
+                        .css('margin-right', '8px')
+                        .html('<i class="fas fa-edit"></i> Editar')
+                        .click(function () {
+                            editarBeneficiario(i);
+                        });
+                    var btnExcluir = $('<button>').addClass('btn btn-danger btn-sm').html('<i class="fas fa-trash"></i> Excluir').click(function () {
+                        beneficiarios.splice(i, 1);
+                        renderizarTabela();
+                        atualizarCampoHidden();
+                    });
+                    row.append($('<td>').append(btnEditar).append(btnExcluir));
+                    tbody.append(row);
+                });
+            }
+
+            function editarBeneficiario(index) {
+                var b = beneficiarios[index];
+                $('#CpfBeneficiario').val(formatarCPF(b.Cpf));
+                $('#NomeBeneficiario').val(b.Nome);
+                indiceEdicao = index;
+                $('#btnIncluirBeneficiario').text('Atualizar').removeClass('btn-success').addClass('btn-warning');
+            }
+
+            function atualizarCampoHidden() {
+                $('#BeneficiariosJson').val(JSON.stringify(beneficiarios));
+            }
+
+            $('#btnIncluirBeneficiario').click(function () {
+                var cpfRaw = $('#CpfBeneficiario').val().replace(/\D/g, '');
+                var nome = $('#NomeBeneficiario').val().trim();
+
+                if (!cpfRaw || cpfRaw.length !== 11) {
+                    alert('Informe um CPF válido');
+                    return;
+                }
+                if (!nome) {
+                    alert('Informe o nome do beneficiário');
+                    return;
+                }
+
+                if (indiceEdicao === null) {
+                    var existe = beneficiarios.some(b => b.Cpf === cpfRaw);
+                    if (existe) {
+                        alert('Este CPF já foi adicionado');
+                        return;
+                    }
+                    beneficiarios.push({ Cpf: cpfRaw, Nome: nome });
+                } else {
+                    beneficiarios[indiceEdicao].Cpf = cpfRaw;
+                    beneficiarios[indiceEdicao].Nome = nome;
+                    indiceEdicao = null;
+                    $('#btnIncluirBeneficiario').text('Incluir').removeClass('btn-warning').addClass('btn-success');
+                }
+                atualizarCampoHidden();
+                renderizarTabela();
+
+                $('#CpfBeneficiario, #NomeBeneficiario').val('');
+                $('#CpfBeneficiario').focus();
+            });
+
+            $('#btnConfirmarBeneficiarios').click(function () {
+                $('#modalBeneficiarios').modal('hide');
+            });
+
+            renderizarTabela();
+            atualizarCampoHidden();
+        });
+    </script>

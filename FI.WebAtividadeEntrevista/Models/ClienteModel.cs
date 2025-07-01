@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
-using FI.WebAtividadeEntrevista.Models;
+
 
 namespace WebAtividadeEntrevista.Models
 {
@@ -75,7 +72,7 @@ namespace WebAtividadeEntrevista.Models
         /// </summary>
         public string Telefone { get; set; }
         public string BeneficiariosJson { get; set; }
-        public List<BeneficiarioModal> Beneficiarios { get; set; }
+        public List<BeneficiarioModel> Beneficiarios { get; set; } = new List<BeneficiarioModel>();
 
     }    
 }

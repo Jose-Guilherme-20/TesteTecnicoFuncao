@@ -1,66 +1,49 @@
-﻿@using System.Web.Mvc
-@using System.Web.Mvc.Html
+﻿@model WebAtividadeEntrevista.Models.ClienteModel
 
-@model WebAtividadeEntrevista.Models.ClienteModel
+@{
+    ViewBag.Title = Model.Id == 0 ? "Cadastrar Cliente" : "Alterar Cliente";
+}
 
-<!-- Inclua essas referências no cabeçalho se ainda não estiverem -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+@section scripts {
+    <script>
+        var urlPost = '@Url.Action(Model.Id == 0 ? "Incluir" : "Alterar", "Cliente")';
+    </script>
 
-<form id="formCadastro" method="post">
+    @Scripts.Render("~/bundles/clientes")
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Aplicar máscaras
+            $('#Cpf').mask('000.000.000-00', { reverse: true });
+            $('#Telefone').mask('(00) 0000-00009');
+            $('#CEP').mask('00000-000');
+
+            // Atualizar contador de beneficiários
+            $('#modalBeneficiarios').on('hidden.bs.modal', function () {
+                var count = $('#BeneficiariosJson').val()
+                    ? JSON.parse($('#BeneficiariosJson').val()).length
+                    : 0;
+                $('.btn-beneficiarios').text('Beneficiários (' + count + ')');
+            });
+        });
+    </script>
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm(Model.Id == 0 ? "Incluir" : "Alterar", "Cliente", FormMethod.Post, new { id = "formCadastro" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.BeneficiariosJson, new { id = "BeneficiariosJson" })
+
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
-                <label for="Nome">Nome:</label>
-                <input required="required" type="text" class="form-control" id="Nome" name="Nome" placeholder="Ex.: João" maxlength="50">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="form-group">
-                <label for="Cpf">Cpf:</label>
-                <input required="required" type="text" class="form-control" id="Cpf" name="Cpf" placeholder="000.000.000-00">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="Sobrenome">Sobrenome:</label>
-                <input required="required" type="text" class="form-control" id="Sobrenome" name="Sobrenome" placeholder="Ex.: da Silva" maxlength="255">
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="Nacionalidade">Nacionalidade:</label>
-                <input required="required" type="text" class="form-control" id="Nacionalidade" name="Nacionalidade" placeholder="Ex.: brasileira" maxlength="50">
-            </div>
-        </div>
-
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="CEP">CEP:</label>
-                <input required="required" type="text" class="form-control" id="CEP" name="CEP" placeholder="Ex.: 01011-100" maxlength="9">
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="Estado">Estado:</label>
-                <select required="required" id="Estado" class="form-control" name="Estado">
-                    <option value="">Selecione</option>
-                    <option value="SP">São Paulo</option>
-                    <option value="PE">Pernambuco</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="Cidade">Cidade:</label>
-                <input required="required" type="text" class="form-control" id="Cidade" name="Cidade" maxlength="50" placeholder="Ex.: São Paulo">
+                @Html.LabelFor(m => m.Nome)
+                @Html.TextBoxFor(m => m.Nome, new { @class = "form-control", placeholder = "Ex.: João", maxlength = 50, required = "required" })
+                @Html.ValidationMessageFor(m => m.Nome)
             </div>
         </div>
     </div>
@@ -68,8 +51,9 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
-                <label for="Logradouro">Logradouro:</label>
-                <input required="required" type="text" class="form-control" id="Logradouro" name="Logradouro" placeholder="Ex.: Rua Boa Vista 253" maxlength="500">
+                @Html.LabelFor(m => m.Cpf)
+                @Html.TextBoxFor(m => m.Cpf, new { @class = "form-control", placeholder = "000.000.000-00", maxlength = 14, required = "required" })
+                @Html.ValidationMessageFor(m => m.Cpf)
             </div>
         </div>
     </div>
@@ -77,57 +61,85 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="Email">E-mail:</label>
-                <input required="required" type="text" class="form-control" id="Email" name="Email" placeholder="Ex.: email@email.com" maxlength="2079">
+                @Html.LabelFor(m => m.Sobrenome)
+                @Html.TextBoxFor(m => m.Sobrenome, new { @class = "form-control", placeholder = "Ex.: da Silva", maxlength = 255, required = "required" })
+                @Html.ValidationMessageFor(m => m.Sobrenome)
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label for="Telefone">Telefone:</label>
-                <input required="required" type="tel" class="form-control" id="Telefone" name="Telefone" placeholder="Ex.: (11) 2020-3030" maxlength="15">
+                @Html.LabelFor(m => m.Nacionalidade)
+                @Html.TextBoxFor(m => m.Nacionalidade, new { @class = "form-control", placeholder = "Ex.: brasileira", maxlength = 50, required = "required" })
+                @Html.ValidationMessageFor(m => m.Nacionalidade)
             </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(m => m.CEP)
+                @Html.TextBoxFor(m => m.CEP, new { @class = "form-control", placeholder = "Ex.: 01011-100", maxlength = 9, required = "required" })
+                @Html.ValidationMessageFor(m => m.CEP)
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(m => m.Estado)
+                @Html.DropDownListFor(m => m.Estado, new SelectList(new List<string> { "SP", "PE" }), "Selecione", new { @class = "form-control", required = "required" })
+                @Html.ValidationMessageFor(m => m.Estado)
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(m => m.Cidade)
+                @Html.TextBoxFor(m => m.Cidade, new { @class = "form-control", placeholder = "Ex.: São Paulo", maxlength = 50, required = "required" })
+                @Html.ValidationMessageFor(m => m.Cidade)
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                @Html.LabelFor(m => m.Logradouro)
+                @Html.TextBoxFor(m => m.Logradouro, new { @class = "form-control", placeholder = "Ex.: Rua Boa Vista 253", maxlength = 500, required = "required" })
+                @Html.ValidationMessageFor(m => m.Logradouro)
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email)
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Ex.: email@email.com", maxlength = 2079, required = "required", type = "email" })
+                @Html.ValidationMessageFor(m => m.Email)
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                @Html.LabelFor(m => m.Telefone)
+                @Html.TextBoxFor(m => m.Telefone, new { @class = "form-control", placeholder = "Ex.: (11) 2020-3030", maxlength = 15, required = "required" })
+                @Html.ValidationMessageFor(m => m.Telefone)
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
             <div class="pull-left">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBeneficiarios">
-                    Beneficiários
+                <button type="button" class="btn btn-primary btn-beneficiarios" data-toggle="modal" data-target="#modalBeneficiarios">
+                    Beneficiários 
                 </button>
-
-                <input type="hidden" name="BeneficiariosJson" id="BeneficiariosJson" />
-
             </div>
             <div class="pull-right">
-                <button type="submit" class="btn btn-sm btn-success">Salvar</button>
-                @Html.ActionLink("Voltar", "Index", "Cliente", new { }, new { @class = "btn btn-sm btn-danger" })
+                <button type="submit" class="btn btn-success">Salvar</button>
+                @Html.ActionLink("Voltar", "Index", "Cliente", null, new { @class = "btn btn-danger" })
             </div>
         </div>
     </div>
-</form>
 
-<div>
-    @Html.Partial("_ListaBeneficiarios", Model.Beneficiarios);
-</div>
-
-<script>
-    $(document).ready(function () {
-        // Aplicar máscaras aos campos
-
-        // Atualizar contador de beneficiários quando a modal fecha
-        $('#modalBeneficiarios').on('hidden.bs.modal', function () {
-            var count = $('#BeneficiariosJson').val()
-                ? JSON.parse($('#BeneficiariosJson').val()).length
-                : 0;
-            console.log('Total de beneficiários:', count);
-        });
-    });
-</script>
-
-
-
-
-
-
-
+    <!-- Partial modal para beneficiarios -->
+    @Html.Partial("_ModalBeneficiarios", Model.Beneficiarios ?? new List<WebAtividadeEntrevista.Models.BeneficiarioModel>())
+}

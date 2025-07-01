@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using FI.AtividadeEntrevista.DML;
-using FI.WebAtividadeEntrevista.Models;
 using System.Text.Json;
 
 namespace WebAtividadeEntrevista.Controllers
@@ -20,13 +19,17 @@ namespace WebAtividadeEntrevista.Controllers
 
         public ActionResult Incluir()
         {
-            return View();
+            var model = new ClienteModel();
+            return View("Forms", model);
         }
 
         [HttpPost]
         public JsonResult Incluir(ClienteModel model)
         {
-            var beneficiarios = JsonSerializer.Deserialize<List<BeneficiarioModal>>(model.BeneficiariosJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true});
+            var beneficiarios = new List<BeneficiarioModel>();
+
+            if (model.BeneficiariosJson != null)
+                beneficiarios = JsonSerializer.Deserialize<List<BeneficiarioModel>>(model.BeneficiariosJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             BoCliente bo = new BoCliente();
             
@@ -80,7 +83,12 @@ namespace WebAtividadeEntrevista.Controllers
         public JsonResult Alterar(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
-       
+
+            var beneficiarios = new List<BeneficiarioModel>();
+
+            if (model.BeneficiariosJson != null)
+             beneficiarios = JsonSerializer.Deserialize<List<BeneficiarioModel>>(model.BeneficiariosJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
             if (!this.ModelState.IsValid)
             {
                 List<string> erros = (from item in ModelState.Values
@@ -103,11 +111,70 @@ namespace WebAtividadeEntrevista.Controllers
                     Nacionalidade = model.Nacionalidade,
                     Nome = model.Nome,
                     Sobrenome = model.Sobrenome,
-                    Cpf = model.Cpf,
+                    Cpf = model.Cpf.Replace(".","").Replace("-",""),
                     Telefone = model.Telefone
                 });
+
+                UpdateBeneficiariosPorCliente(beneficiarios, model.Id);
                                
                 return Json("Cadastro alterado com sucesso");
+            }
+        }
+
+        private void UpdateBeneficiariosPorCliente(List<BeneficiarioModel> beneficiarios, long idCliente)
+        {
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
+
+            var todosBeneficiariosDb = boBeneficiario.ListarPorCliente(idCliente);
+
+            var listaIds = beneficiarios.Where(x => x.Id > 0).Select(ben => ben.Id).ToList();
+
+            var beneficiariosExcluir = todosBeneficiariosDb.Where(x => !beneficiarios.Any(b => b.Id == x.Id)).ToList();
+
+            var beneficiariosEditar = todosBeneficiariosDb.Where(x => beneficiarios.Any(b => b.Id == x.Id)).ToList();
+
+            var beneficiariosCriar = beneficiarios.Where(x => x.Id == 0).Select(vm =>
+            {
+                vm.ClienteId = idCliente;
+                return vm;
+            }).ToList();
+
+            if(beneficiariosExcluir != null && beneficiariosExcluir.Count > 0)
+            {
+                foreach (var item in beneficiariosExcluir)
+                {
+                    boBeneficiario.Excluir(item.Id);
+                }
+            }
+            if (beneficiariosEditar != null && beneficiariosEditar.Count > 0)
+            {
+                foreach (var item in beneficiariosEditar)
+                {
+                    var beneficiario = beneficiarios.FirstOrDefault(b => b.Id == item.Id);
+                    if (beneficiario != null)
+                    {
+                        boBeneficiario.Alterar(new Beneficiario()
+                        {
+                            Id = item.Id,
+                            Nome = beneficiario.Nome,
+                            Cpf = beneficiario.Cpf,
+                            ClienteId = idCliente
+                        });
+                    }
+                }
+            }
+
+            if (beneficiariosCriar != null && beneficiariosCriar.Count > 0)
+            {
+                foreach (var item in beneficiariosCriar)
+                {
+                    boBeneficiario.Incluir(new Beneficiario()
+                    {
+                        Nome = item.Nome,
+                        Cpf = item.Cpf,
+                        ClienteId = idCliente
+                    });
+                }
             }
         }
 
@@ -117,6 +184,10 @@ namespace WebAtividadeEntrevista.Controllers
             BoCliente bo = new BoCliente();
             Cliente cliente = bo.Consultar(id);
             Models.ClienteModel model = null;
+
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
+
+            List<Beneficiario> benficiarios = boBeneficiario.ListarPorCliente(id);
 
             if (cliente != null)
             {
@@ -132,13 +203,20 @@ namespace WebAtividadeEntrevista.Controllers
                     Nome = cliente.Nome,
                     Sobrenome = cliente.Sobrenome,
                     Cpf = cliente.Cpf,
-                    Telefone = cliente.Telefone
+                    Telefone = cliente.Telefone,
+                    Beneficiarios = benficiarios.Select(benficiario => new BeneficiarioModel()
+                    {
+                        Id = benficiario.Id,
+                        Nome = benficiario.Nome,
+                        Cpf = benficiario.Cpf,
+                        ClienteId = benficiario.ClienteId
+                    }).ToList(),
                 };
 
             
             }
 
-            return View(model);
+            return View("Forms", model);
         }
 
         [HttpPost]

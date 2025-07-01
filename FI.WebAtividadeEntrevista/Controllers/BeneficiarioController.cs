@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Web;
 using System.Web.Mvc;
 using FI.AtividadeEntrevista.BLL;
 using FI.AtividadeEntrevista.DML;
-using FI.WebAtividadeEntrevista.Models;
 using WebAtividadeEntrevista.Models;
 
 namespace FI.WebAtividadeEntrevista.Controllers
@@ -25,7 +21,7 @@ namespace FI.WebAtividadeEntrevista.Controllers
         }
 
         [HttpPost]
-        public JsonResult Incluir(BeneficiarioModal model)
+        public JsonResult Incluir(BeneficiarioModel model)
         {
             //BoCliente bo = new BoCliente();
 
@@ -61,7 +57,7 @@ namespace FI.WebAtividadeEntrevista.Controllers
         }
 
         [HttpPost]
-        public JsonResult Alterar(BeneficiarioModal model)
+        public JsonResult Alterar(BeneficiarioModel model)
         {
             //BoCliente bo = new BoCliente();
 
@@ -93,11 +89,11 @@ namespace FI.WebAtividadeEntrevista.Controllers
         {
             BoCliente bo = new BoCliente();
             Cliente cliente = bo.Consultar(id);
-            Models.BeneficiarioModal model = null;
+            BeneficiarioModel model = null;
 
             if (cliente != null)
             {
-                model = new BeneficiarioModal()
+                model = new BeneficiarioModel()
                 {
                     Id = cliente.Id,
                     Nome = cliente.Nome,
