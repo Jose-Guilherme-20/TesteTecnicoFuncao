@@ -1,6 +1,8 @@
 ﻿@using System.Web.Mvc
 @using System.Web.Mvc.Html
 
+@model WebAtividadeEntrevista.Models.ClienteModel
+
 <!-- Inclua essas referências no cabeçalho se ainda não estiverem -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -106,7 +108,7 @@
 </form>
 
 <div>
-    @Html.Partial("_ListaBeneficiarios")
+    @Html.Partial("_ListaBeneficiarios", Model.Beneficiarios);
 </div>
 
 <script>

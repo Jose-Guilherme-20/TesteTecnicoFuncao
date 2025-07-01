@@ -124,7 +124,7 @@
             var cpf = $('#CpfBeneficiario').val().replace(/\D/g, '');
             var nome = $('#NomeBeneficiario').val().trim();
 
-            if (!validarCPF(cpf)) {
+            if (!isValidCPF(cpf)) {
                 alert('CPF inválido');
                 return;
             }
@@ -148,7 +148,7 @@
             beneficiarios.push({
                 cpf: cpf,
                 nome: nome,
-                clienteId: $('#ClienteId').val() || null
+                clienteId: $('#ClienteId').val() || 0
             });
 
             console.log(beneficiarios);

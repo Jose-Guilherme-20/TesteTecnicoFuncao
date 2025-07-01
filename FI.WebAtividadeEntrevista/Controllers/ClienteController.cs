@@ -26,7 +26,7 @@ namespace WebAtividadeEntrevista.Controllers
         [HttpPost]
         public JsonResult Incluir(ClienteModel model)
         {
-            var beneficiarios = JsonSerializer.Deserialize<List<BeneficiarioModal>>(model.BeneficiariosJson);
+            var beneficiarios = JsonSerializer.Deserialize<List<BeneficiarioModal>>(model.BeneficiariosJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true});
 
             BoCliente bo = new BoCliente();
             
@@ -67,7 +67,7 @@ namespace WebAtividadeEntrevista.Controllers
                         {
                             Nome = item.Nome,
                             Cpf = item.Cpf,
-                            ClienteId = item.ClienteId
+                            ClienteId = item.ClienteId.Value
                         });
                     }
                 }

@@ -16,8 +16,7 @@ namespace FI.WebAtividadeEntrevista.Models
         /// <summary>
         ///   Identificador do Cliente ao qual o Beneficiário está vinculado.
         /// </summary>
-        [Required]
-        public long ClienteId { get; set; }
+        public long? ClienteId { get; set; }
 
         /// <summary>
         /// CPF do Beneficiário

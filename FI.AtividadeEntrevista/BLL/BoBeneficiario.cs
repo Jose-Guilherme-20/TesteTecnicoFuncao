@@ -9,62 +9,62 @@ namespace FI.AtividadeEntrevista.BLL
     public class BoBeneficiario
     {
         /// <summary>
-        /// Inclui um novo cliente
+        /// Inclui um novo beneficiario
         /// </summary>
-        /// <param name="cliente">Objeto de cliente</param>
-        public long Incluir(DML.Beneficiario cliente)
+        /// <param name="beneficiario">Objeto de beneficiario</param>
+        public long Incluir(DML.Beneficiario beneficiario)
         {
             DAL.DaoBeneficiario cli = new DAL.DaoBeneficiario();
-            return cli.Incluir(cliente);
+            return cli.Incluir(beneficiario);
         }
 
         /// <summary>
-        /// Altera um cliente
+        /// Altera um beneficiario
         /// </summary>
-        /// <param name="cliente">Objeto de cliente</param>
-        public void Alterar(DML.Cliente cliente)
+        /// <param name="beneficiario">Objeto de beneficiario</param>
+        public void Alterar(DML.Beneficiario beneficiario)
         {
-            DAL.DaoCliente cli = new DAL.DaoCliente();
-            cli.Alterar(cliente);
+            DAL.DaoBeneficiario cli = new DAL.DaoBeneficiario();
+            cli.Alterar(beneficiario);
         }
 
         /// <summary>
-        /// Consulta o cliente pelo id
+        /// Consulta o beneficiario pelo id
         /// </summary>
-        /// <param name="id">id do cliente</param>
+        /// <param name="id">id do beneficiario</param>
         /// <returns></returns>
-        public DML.Cliente Consultar(long id)
+        public DML.Beneficiario Consultar(long id)
         {
-            DAL.DaoCliente cli = new DAL.DaoCliente();
+            DAL.DaoBeneficiario cli = new DAL.DaoBeneficiario();
             return cli.Consultar(id);
         }
 
         /// <summary>
-        /// Excluir o cliente pelo id
+        /// Excluir o beneficiario pelo id
         /// </summary>
-        /// <param name="id">id do cliente</param>
+        /// <param name="id">id do beneficiario</param>
         /// <returns></returns>
         public void Excluir(long id)
         {
-            DAL.DaoCliente cli = new DAL.DaoCliente();
+            DAL.DaoBeneficiario cli = new DAL.DaoBeneficiario();
             cli.Excluir(id);
         }
 
         /// <summary>
-        /// Lista os clientes
+        /// Lista os beneficiarios
         /// </summary>
-        public List<DML.Cliente> Listar()
+        public List<DML.Beneficiario> Listar()
         {
-            DAL.DaoCliente cli = new DAL.DaoCliente();
+            DAL.DaoBeneficiario cli = new DAL.DaoBeneficiario();
             return cli.Listar();
         }
 
         /// <summary>
-        /// Lista os clientes
+        /// Lista os beneficiarios
         /// </summary>
-        public List<DML.Cliente> Pesquisa(int iniciarEm, int quantidade, string campoOrdenacao, bool crescente, out int qtd)
+        public List<DML.Beneficiario> Pesquisa(int iniciarEm, int quantidade, string campoOrdenacao, bool crescente, out int qtd)
         {
-            DAL.DaoCliente cli = new DAL.DaoCliente();
+            DAL.DaoBeneficiario cli = new DAL.DaoBeneficiario();
             return cli.Pesquisa(iniciarEm,  quantidade, campoOrdenacao, crescente, out qtd);
         }
 
@@ -75,7 +75,7 @@ namespace FI.AtividadeEntrevista.BLL
         /// <returns></returns>
         public bool VerificarExistencia(string CPF)
         {
-            DAL.DaoCliente cli = new DAL.DaoCliente();
+            DAL.DaoBeneficiario cli = new DAL.DaoBeneficiario();
             return cli.VerificarExistencia(CPF);
         }
     }
