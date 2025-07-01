@@ -3,9 +3,10 @@ using WebAtividadeEntrevista.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using FI.AtividadeEntrevista.DML;
+using FI.WebAtividadeEntrevista.Models;
+using System.Text.Json;
 
 namespace WebAtividadeEntrevista.Controllers
 {
@@ -25,6 +26,8 @@ namespace WebAtividadeEntrevista.Controllers
         [HttpPost]
         public JsonResult Incluir(ClienteModel model)
         {
+            var beneficiarios = JsonSerializer.Deserialize<List<BeneficiarioModal>>(model.BeneficiariosJson);
+
             BoCliente bo = new BoCliente();
             
             if (!this.ModelState.IsValid)
@@ -53,7 +56,22 @@ namespace WebAtividadeEntrevista.Controllers
                     Telefone = model.Telefone
                 });
 
-           
+                BoBeneficiario boBeneficiario = new BoBeneficiario();
+
+                if (beneficiarios != null && beneficiarios.Count > 0)
+                {
+                    foreach (var item in beneficiarios)
+                    {
+                        item.ClienteId = model.Id;
+                        boBeneficiario.Incluir(new Beneficiario()
+                        {
+                            Nome = item.Nome,
+                            Cpf = item.Cpf,
+                            ClienteId = item.ClienteId
+                        });
+                    }
+                }
+
                 return Json("Cadastro efetuado com sucesso");
             }
         }
@@ -148,6 +166,6 @@ namespace WebAtividadeEntrevista.Controllers
             {
                 return Json(new { Result = "ERROR", Message = ex.Message });
             }
-        }
+        } 
     }
 }

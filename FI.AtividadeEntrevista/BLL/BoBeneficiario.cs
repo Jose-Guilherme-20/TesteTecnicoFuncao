@@ -12,9 +12,9 @@ namespace FI.AtividadeEntrevista.BLL
         /// Inclui um novo cliente
         /// </summary>
         /// <param name="cliente">Objeto de cliente</param>
-        public long Incluir(DML.Cliente cliente)
+        public long Incluir(DML.Beneficiario cliente)
         {
-            DAL.DaoCliente cli = new DAL.DaoCliente();
+            DAL.DaoBeneficiario cli = new DAL.DaoBeneficiario();
             return cli.Incluir(cliente);
         }
 

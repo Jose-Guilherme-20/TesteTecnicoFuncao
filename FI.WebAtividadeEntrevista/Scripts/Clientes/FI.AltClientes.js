@@ -9,6 +9,7 @@ $(document).ready(function () {
         $('#formCadastro #Nacionalidade').val(obj.Nacionalidade);
         $('#formCadastro #Estado').val(obj.Estado);
         $('#formCadastro #Cidade').val(obj.Cidade);
+        $('#formCadastro #BeneficiariosJson').val(obj.BeneficiariosJson);
         $('#formCadastro #Logradouro').val(obj.Logradouro);
         $('#formCadastro #Telefone').val(obj.Telefone);
     }
@@ -28,6 +29,7 @@ $(document).ready(function () {
                 "Nacionalidade": $(this).find("#Nacionalidade").val(),
                 "Estado": $(this).find("#Estado").val(),
                 "Cidade": $(this).find("#Cidade").val(),
+                "BeneficiariosJson": $(this).find("#BeneficiariosJson").val(),
                 "Logradouro": $(this).find("#Logradouro").val(),
                 "Telefone": $(this).find("#Telefone").val()
             },

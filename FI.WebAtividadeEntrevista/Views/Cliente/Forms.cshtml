@@ -1,4 +1,11 @@
-﻿
+﻿@using System.Web.Mvc
+@using System.Web.Mvc.Html
+
+<!-- Inclua essas referências no cabeçalho se ainda não estiverem -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
 <form id="formCadastro" method="post">
     <div class="row">
         <div class="col-md-12">
@@ -102,9 +109,20 @@
     @Html.Partial("_ListaBeneficiarios")
 </div>
 
-@section Scripts {
-    <script src="~/Scripts/Beneficiarios/beneficiarios.js"></script>
-}
+<script>
+    $(document).ready(function () {
+        // Aplicar máscaras aos campos
+
+        // Atualizar contador de beneficiários quando a modal fecha
+        $('#modalBeneficiarios').on('hidden.bs.modal', function () {
+            var count = $('#BeneficiariosJson').val()
+                ? JSON.parse($('#BeneficiariosJson').val()).length
+                : 0;
+            console.log('Total de beneficiários:', count);
+        });
+    });
+</script>
+
 
 
 

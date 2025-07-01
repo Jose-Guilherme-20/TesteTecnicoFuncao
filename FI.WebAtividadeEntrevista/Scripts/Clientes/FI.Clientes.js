@@ -14,6 +14,7 @@ $(document).ready(function () {
                 "Nacionalidade": $(this).find("#Nacionalidade").val(),
                 "Estado": $(this).find("#Estado").val(),
                 "Cidade": $(this).find("#Cidade").val(),
+                "BeneficiariosJson": $(this).find("#BeneficiariosJson").val(),
                 "Logradouro": $(this).find("#Logradouro").val(),
                 "Telefone": $(this).find("#Telefone").val()
             },
