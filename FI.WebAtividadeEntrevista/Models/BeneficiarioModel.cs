@@ -28,5 +28,6 @@ namespace WebAtividadeEntrevista.Models
         /// Nome do Beneficiário.
         /// </summary>
         public string Nome { get; set; }
+        public ClienteModel Cliente { get; set; }
     }
 }
